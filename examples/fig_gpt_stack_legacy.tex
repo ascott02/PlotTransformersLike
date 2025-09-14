@@ -1,0 +1,33 @@
+
+\documentclass[border=8pt, multi, tikz]{standalone} 
+\usepackage{import}
+\subimport{/home/ascott/ascott_from_rey/ascott_svn/SFSU/Fall_2025/PlotTransformersLike/layers/}{init}
+% Extended transformer styles
+\input{transformer_tex/transformer_styles.tex}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} %for including external image 
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+\node[sblk=2.60cm/0.60cm] (b0_ln1) at (0.00cm,0.00cm) {LayerNorm};
+\node[blk=3.80cm/1.20cm] (b0_mha) at (3.20cm,0.00cm) {MHA\\\scriptsize(h=8, $d_{model}=768$)};
+\node[sblk=2.60cm/0.60cm] (b0_ln2) at (7.40cm,0.00cm) {LayerNorm};
+\node[blk=3.20cm/1.20cm] (b0_ffn) at (10.60cm,0.00cm) {FFN\\\scriptsize($d_{ff}=3072$)};
+\node[addnode=0.22cm/0.22cm] (b0_add) at (14.40cm,0.20cm) {$+$};
+\node[sblk=2.60cm/0.60cm] (b1_ln1) at (18.00cm,0.00cm) {LayerNorm};
+\node[blk=3.80cm/1.20cm] (b1_mha) at (21.20cm,0.00cm) {MHA\\\scriptsize(h=8, $d_{model}=768$)};
+\node[sblk=2.60cm/0.60cm] (b1_ln2) at (25.40cm,0.00cm) {LayerNorm};
+\node[blk=3.20cm/1.20cm] (b1_ffn) at (28.60cm,0.00cm) {FFN\\\scriptsize($d_{ff}=3072$)};
+\node[addnode=0.22cm/0.22cm] (b1_add) at (32.40cm,0.20cm) {$+$};
+\node[sblk=2.60cm/0.60cm] (b2_ln1) at (36.00cm,0.00cm) {LayerNorm};
+\node[blk=3.80cm/1.20cm] (b2_mha) at (39.20cm,0.00cm) {MHA\\\scriptsize(h=8, $d_{model}=768$)};
+\node[sblk=2.60cm/0.60cm] (b2_ln2) at (43.40cm,0.00cm) {LayerNorm};
+\node[blk=3.20cm/1.20cm] (b2_ffn) at (46.60cm,0.00cm) {FFN\\\scriptsize($d_{ff}=3072$)};
+\node[addnode=0.22cm/0.22cm] (b2_add) at (50.40cm,0.20cm) {$+$};
+
+\end{tikzpicture}
+\end{document}

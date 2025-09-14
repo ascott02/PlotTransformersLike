@@ -1,5 +1,45 @@
 
-import os
+import os, sys
+
+# Compatibility layer additions for transformer-style diagrams.
+# These helpers mimic the original string-based API without depending
+# on the new Python object model so legacy scripts can be updated with
+# minimal changes.
+
+def _tf_node(style, name, x, y, w, h, label):
+    return f"\\node[{style}={w:.2f}cm/{h:.2f}cm] ({name}) at ({x:.2f}cm,{y:.2f}cm) {{{label}}};\n"
+
+def to_LayerNorm(name, x, y, w=2.6, h=0.6, text="LayerNorm"):
+    return _tf_node("sblk", name, x, y, w, h, text)
+
+def to_MHA(name, x, y, w=3.8, h=1.2, heads=8, d_model=768, masked=False):
+    star = "*" if masked else ""
+    label = f"MHA{star}\\\\\\scriptsize(h={heads}, $d_{{model}}={d_model}$)"
+    return _tf_node("blk", name, x, y, w, h, label)
+
+def to_FFN(name, x, y, w=3.2, h=1.2, dff=3072):
+    label = f"FFN\\\\\\scriptsize($d_{{ff}}={dff}$)"
+    return _tf_node("blk", name, x, y, w, h, label)
+
+def to_Add(name, x, y, r=0.22):  # add node expects same w/h param twice
+    return f"\\node[addnode={r:.2f}cm/{r:.2f}cm] ({name}) at ({x:.2f}cm,{y:.2f}cm) {{$+$}};\n"
+
+def to_CLSHead(name, x, y, w=2.4, h=1.0, classes=1000):
+    label = f"CLS Head\\\\\\scriptsize($C={classes}$)"
+    return _tf_node("blk", name, x, y, w, h, label)
+
+def to_transformer_block(name_prefix, x, y):
+    """Return snippets for a minimal encoder-style block (LN -> MHA -> LN -> FFN -> Add)."""
+    snippets = []
+    snippets.append(to_LayerNorm(f"{name_prefix}ln1", x, y))
+    snippets.append(to_MHA(f"{name_prefix}mha", x + 3.2, y))
+    snippets.append(to_LayerNorm(f"{name_prefix}ln2", x + 7.4, y))
+    snippets.append(to_FFN(f"{name_prefix}ffn", x + 10.6, y))
+    snippets.append(to_Add(f"{name_prefix}add", x + 14.4, y + 0.2))
+    return snippets
+
+def to_xt_transformer_block(name_prefix, x, y):  # backwards alias
+    return to_transformer_block(name_prefix, x, y)
 
 def to_head( projectpath ):
     pathlayers = os.path.join( projectpath, 'layers/' ).replace('\\', '/')
@@ -7,6 +47,8 @@ def to_head( projectpath ):
 \documentclass[border=8pt, multi, tikz]{standalone} 
 \usepackage{import}
 \subimport{"""+ pathlayers + r"""}{init}
+% Extended transformer styles
+\input{transformer_tex/transformer_styles.tex}
 \usetikzlibrary{positioning}
 \usetikzlibrary{3d} %for including external image 
 """

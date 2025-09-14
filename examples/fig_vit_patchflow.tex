@@ -1,0 +1,102 @@
+
+\documentclass[tikz,border=2pt]{standalone}
+\input{transformer_tex/transformer_styles.tex}
+\begin{document}
+\begin{tikzpicture}
+% --- Primitive nodes -------------------------------------------------------
+
+  \node[blk=3.20cm/1.00cm] (patch) at (0.00cm,0.00cm) { PatchEmbed\\\scriptsize(16×16→$d=768$) };
+
+  \node[sblk=1.40cm/0.80cm] (cls) at (4.40cm,0.20cm) { [CLS] };
+
+  \node[sblk=1.60cm/0.80cm] (pos) at (6.70cm,0.20cm) { PosEnc };
+
+  \node[sblk=2.60cm/0.60cm] (ln0_1) at (9.90cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha0) at (13.10cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add0_1) at (15.50cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln0_2) at (17.20cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn0) at (19.90cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add0_2) at (22.30cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln1_1) at (24.52cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha1) at (27.72cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add1_1) at (30.12cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln1_2) at (31.82cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn1) at (34.52cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add1_2) at (36.92cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln2_1) at (39.14cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha2) at (42.34cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add2_1) at (44.74cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln2_2) at (46.44cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn2) at (49.14cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add2_2) at (51.54cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln3_1) at (53.76cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha3) at (56.96cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add3_1) at (59.36cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln3_2) at (61.06cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn3) at (63.76cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add3_2) at (66.16cm,0.20cm) { + };
+
+  \node[blk=2.40cm/1.00cm] (cls_head) at (68.38cm,0.10cm) { CLS Head\\\scriptsize($C=1000$) };
+
+  \node[tagnode=1.00cm/0.50cm] (enc_tag) at (37.64cm,1.70cm) { $\times 4$ };
+
+
+% --- Group / lane boxes (background layer) --------------------------------
+
+\begin{scope}[on background layer]
+
+  \node[gbox,label=above:Encoder ×4,fit=(ln0_1) (mha0) (add0_1) (ln0_2) (ffn0) (add0_2) (ln1_1) (mha1) (add1_1) (ln1_2) (ffn1) (add1_2) (ln2_1) (mha2) (add2_1) (ln2_2) (ffn2) (add2_2) (ln3_1) (mha3) (add3_1) (ln3_2) (ffn3) (add3_2)] (enc_stack) {};
+
+\end{scope}
+
+
+% --- Edges -----------------------------------------------------------------
+
+  
+  \path[conn] (patch.east) -- (cls.west);
+
+  
+  \path[conn] (cls.east) -- (pos.west);
+
+  \path[conn] (patch.north) -- ++(0.40cm,0.00cm) |- (pos.north);
+
+  
+  \path[conn] (add3_2.east) -- (cls_head.west);
+
+  
+  \path[conn] (ln0_1.east) -- (mha0.west);
+
+  
+  \path[conn] (ln1_1.east) -- (mha1.west);
+
+  
+  \path[conn] (ln2_1.east) -- (mha2.west);
+
+  
+  \path[conn] (ln3_1.east) -- (mha3.west);
+
+\end{tikzpicture}
+\end{document}

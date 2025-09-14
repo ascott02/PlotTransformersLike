@@ -109,7 +109,7 @@ def stack_tag(name: str, nodes: Sequence, text: str) -> Any:
             self.y = y
             self.w = 1.0
             self.h = 0.5
-            self.kind = "sblk"
+            self.kind = "tagnode"  # use dedicated style
             self.label = text
             @property
             def anchors(self):  # pragma: no cover - not used currently

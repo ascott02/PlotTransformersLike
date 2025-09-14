@@ -73,3 +73,13 @@ def pos_enc(name: str, x: float, y: float, w: float = 1.6, h: float = 0.8) -> No
 # Small badges / auxiliaries ------------------------------------------------
 def dropout(name: str, x: float, y: float, w: float = 1.0, h: float = 0.5, p: float = 0.1) -> Node:
     return Node(name, x, y, w, h, "sblk", f"Dropout\\\\\\scriptsize(p={p})")
+
+
+# Projection heads ----------------------------------------------------------
+def cls_head(name: str, x: float, y: float, w: float = 2.4, h: float = 1.0, n_classes: int = 1000) -> Node:
+    """Classification head (dense + softmax) placeholder.
+
+    Rendered as a standard block with class count hint. Downstream could add
+    LM heads similarly (tie weights etc.) but for figure purposes we only show dimensions.
+    """
+    return Node(name, x, y, w, h, "blk", f"CLS Head\\\\\\scriptsize($C={n_classes}$)")

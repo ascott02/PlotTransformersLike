@@ -1,3 +1,4 @@
+
 # PlotNeuralNet → Transformers (ViTs/GPTs) — Terraforming README
 
 > This README is a **step‑by‑step prompt** to scaffold a fork of \[HarisIqbal88/PlotNeuralNet] and extend it with **Transformer‑era primitives** (ViTs/GPTs/TimeSformer), keeping the original “**Python → TikZ**” workflow. Follow the checklists top‑to‑bottom to get to usable figures quickly. This directory is a fork of the official repository. 

@@ -4,13 +4,14 @@
 \usetikzlibrary{calc,fit,arrows.meta,positioning,backgrounds}
 
 % Base styles (parameterized width/height usage: style=blk=<w>cm/<h>cm)
-	ikzset{
+\tikzset{
   >={Latex[length=2mm]},
   blk/.style 2 args={draw,rounded corners=2pt,thick,fill=gray!10,minimum width=#1,minimum height=#2,align=center},
   sblk/.style 2 args={draw,rounded corners=2pt,thick,fill=gray!5,minimum width=#1,minimum height=#2,align=center,font=\scriptsize},
   % addnode expects diameter passed twice (w/h) for interface consistency
   addnode/.style 2 args={draw,circle,thick,inner sep=0pt,minimum size=#1,fill=white},
   tag/.style={draw,rounded corners=2pt,thin,fill=white,font=\scriptsize,inner sep=1pt},
+  tagnode/.style 2 args={draw,rounded corners=2pt,thin,fill=yellow!15,minimum width=#1,minimum height=#2,align=center,font=\scriptsize},
   lane/.style={draw,rounded corners=3pt,thick,dashed,inner sep=6pt},
   gbox/.style={draw,rounded corners=4pt,thick,inner sep=6pt,fill=none},
   conn/.style={-Latex,thick},

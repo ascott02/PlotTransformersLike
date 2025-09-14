@@ -97,5 +97,59 @@ Now, run the program as follows:
 
     bash ../tikzmake.sh my_arch
 
+## Transformer Extensions (Experimental)
+
+This fork adds a lightweight Python → TikZ path for Transformer-era diagrams (ViT / GPT / Encoder–Decoder) located in `plotnn_xt/` with examples in `examples/`:
+
+Current example figures:
+
+* `fig_encoder_block.tex` – single encoder block (LN → MHA → Add → LN → FFN → Add)
+* `fig_decoder_block.tex` – decoder block with masked self-attn + cross-attn
+* `fig_encoder_stack.tex` – vertical stack of encoder blocks (repeat helper)
+* `fig_gpt_stack.tex` – horizontal causal decoder stack (no cross-attn)
+* `fig_vit_patchflow.tex` – ViT patch embed → [CLS]+PosEnc → N× encoders → CLS head
+* `fig_encdec_overview.tex` – encoder stack feeding decoder stack with cross-attn edges
+
+Build all example PDFs:
+
+```
+make examples
+```
+
+Each `.tex` lives beside its generated `.pdf` under `examples/`.
+
+### SVG Export
+
+If `pdf2svg` is installed the Makefile offers bulk conversion:
+
+```
+make svg_all
+```
+
+Exports land in `examples/assets/*.svg`. Single file:
+
+```
+make examples/assets/fig_vit_patchflow.svg
+```
+
+If `pdf2svg` is missing, the target prints a helpful message. Alternative: use `dvisvgm` by modifying the Makefile (not yet included).
+
+### Adding New Primitives
+
+See `plotnn_xt/primitives.py` for helper constructors returning `Node` objects with named anchors (`L,R,T,B,C`). Add a new function returning a `Node` and then reference it in an example, finally rebuild with `make`.
+
+### Testing
+
+Minimal emission tests live in `tests/test_emit_tex.py` (pytest). Run:
+
+```
+pytest -q
+```
+
+These assert that key labels (e.g., `MHA*`, `CrossAttn`) render into emitted `.tex`.
+
+---
+Status: experimental; styles in `transformer_tex/transformer_styles.tex` will evolve (color themes, tag node styling, etc.).
+
 
 

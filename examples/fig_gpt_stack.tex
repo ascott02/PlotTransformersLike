@@ -1,0 +1,135 @@
+
+\documentclass[tikz,border=2pt]{standalone}
+\input{transformer_tex/transformer_styles.tex}
+\begin{document}
+\begin{tikzpicture}
+% --- Primitive nodes -------------------------------------------------------
+
+  \node[sblk=2.60cm/0.60cm] (dln0_1) at (0.00cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha0) at (3.20cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_1) at (5.60cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_3) at (7.30cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn0) at (10.30cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_3) at (12.70cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln1_1) at (14.92cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha1) at (18.12cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd1_1) at (20.52cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln1_3) at (22.22cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn1) at (25.22cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd1_3) at (27.62cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln2_1) at (29.84cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha2) at (33.04cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd2_1) at (35.44cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln2_3) at (37.14cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn2) at (40.14cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd2_3) at (42.54cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln3_1) at (44.76cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha3) at (47.96cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd3_1) at (50.36cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln3_3) at (52.06cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn3) at (55.06cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd3_3) at (57.46cm,0.20cm) { + };
+
+  \node[tagnode=1.00cm/0.50cm] (gpt_tag) at (28.34cm,1.70cm) { $\times 4$ };
+
+
+% --- Group / lane boxes (background layer) --------------------------------
+
+\begin{scope}[on background layer]
+
+  \node[gbox,label=above:Decoder ×4,fit=(dln0_1) (dmha0) (dadd0_1) (dln0_3) (dffn0) (dadd0_3) (dln1_1) (dmha1) (dadd1_1) (dln1_3) (dffn1) (dadd1_3) (dln2_1) (dmha2) (dadd2_1) (dln2_3) (dffn2) (dadd2_3) (dln3_1) (dmha3) (dadd3_1) (dln3_3) (dffn3) (dadd3_3)] (gpt_stack) {};
+
+\end{scope}
+
+
+% --- Edges -----------------------------------------------------------------
+
+  
+  \path[conn] (dln0_1.east) -- (dmha0.west);
+
+  
+  \path[conn] (dmha0.east) -- (dadd0_1.west);
+
+  \path[conn] (dln0_1.west) -- ++(-0.80cm,0.00cm) |- (dadd0_1.north);
+
+  
+  \path[conn] (dln0_3.east) -- (dffn0.west);
+
+  
+  \path[conn] (dffn0.east) -- (dadd0_3.west);
+
+  \path[conn] (dln0_3.west) -- ++(-0.80cm,0.00cm) |- (dadd0_3.north);
+
+  
+  \path[conn] (dln1_1.east) -- (dmha1.west);
+
+  
+  \path[conn] (dmha1.east) -- (dadd1_1.west);
+
+  \path[conn] (dln1_1.west) -- ++(-0.80cm,0.00cm) |- (dadd1_1.north);
+
+  
+  \path[conn] (dln1_3.east) -- (dffn1.west);
+
+  
+  \path[conn] (dffn1.east) -- (dadd1_3.west);
+
+  \path[conn] (dln1_3.west) -- ++(-0.80cm,0.00cm) |- (dadd1_3.north);
+
+  
+  \path[conn] (dln2_1.east) -- (dmha2.west);
+
+  
+  \path[conn] (dmha2.east) -- (dadd2_1.west);
+
+  \path[conn] (dln2_1.west) -- ++(-0.80cm,0.00cm) |- (dadd2_1.north);
+
+  
+  \path[conn] (dln2_3.east) -- (dffn2.west);
+
+  
+  \path[conn] (dffn2.east) -- (dadd2_3.west);
+
+  \path[conn] (dln2_3.west) -- ++(-0.80cm,0.00cm) |- (dadd2_3.north);
+
+  
+  \path[conn] (dln3_1.east) -- (dmha3.west);
+
+  
+  \path[conn] (dmha3.east) -- (dadd3_1.west);
+
+  \path[conn] (dln3_1.west) -- ++(-0.80cm,0.00cm) |- (dadd3_1.north);
+
+  
+  \path[conn] (dln3_3.east) -- (dffn3.west);
+
+  
+  \path[conn] (dffn3.east) -- (dadd3_3.west);
+
+  \path[conn] (dln3_3.west) -- ++(-0.80cm,0.00cm) |- (dadd3_3.north);
+
+\end{tikzpicture}
+\end{document}

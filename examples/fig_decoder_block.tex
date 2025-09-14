@@ -1,0 +1,57 @@
+
+\documentclass[tikz,border=2pt]{standalone}
+\input{transformer_tex/transformer_styles.tex}
+\begin{document}
+\begin{tikzpicture}
+% --- Primitive nodes -------------------------------------------------------
+
+  \node[sblk=2.60cm/0.60cm] (dln0_1) at (0.00cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha0) at (3.20cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_1) at (5.60cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_2) at (7.30cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (xatt0) at (10.50cm,0.00cm) { CrossAttn\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_2) at (12.90cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_3) at (14.60cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn0) at (17.60cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_3) at (20.00cm,0.20cm) { + };
+
+
+% --- Group / lane boxes (background layer) --------------------------------
+
+
+% --- Edges -----------------------------------------------------------------
+
+  
+  \path[conn] (dln0_1.east) -- (dmha0.west);
+
+  
+  \path[conn] (dmha0.east) -- (dadd0_1.west);
+
+  \path[conn] (dln0_1.west) -- ++(-0.80cm,0.00cm) |- (dadd0_1.north);
+
+  
+  \path[conn] (dln0_2.east) -- (xatt0.west);
+
+  
+  \path[conn] (xatt0.east) -- (dadd0_2.west);
+
+  \path[conn] (dln0_2.west) -- ++(-0.80cm,0.00cm) |- (dadd0_2.north);
+
+  
+  \path[conn] (dln0_3.east) -- (dffn0.west);
+
+  
+  \path[conn] (dffn0.east) -- (dadd0_3.west);
+
+  \path[conn] (dln0_3.west) -- ++(-0.80cm,0.00cm) |- (dadd0_3.north);
+
+\end{tikzpicture}
+\end{document}

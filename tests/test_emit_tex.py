@@ -2,6 +2,9 @@ from plotnn_xt.primitives import layernorm, mha, ffn, residual_add
 from plotnn_xt.export import export_tex
 from plotnn_xt.layout import connect, elbow, group, repeat
 from plotnn_xt.blocks import encoder_block_factory, decoder_block_factory
+from plotnn_xt.primitives import cls_head, patch_embed, class_token, pos_enc
+from plotnn_xt.export import export_tex
+from plotnn_xt.layout import group, stack_tag
 
 
 def test_encoder_block_emit(tmp_path):
@@ -60,3 +63,16 @@ def test_decoder_block_emit(tmp_path):
     text = out.read_text()
     assert "MHA*" in text  # masked self-attention
     assert "CrossAttn" in text
+
+
+def test_vit_patchflow_min(tmp_path):
+    # Mini reproduction (1 encoder block) of ViT flow focusing on CLS head emission
+    pe = pos_enc("pos", 0.0, 0.0)
+    head = cls_head("head", 4.0, 0.0, n_classes=10)
+    nodes = [pe, head]
+    out = tmp_path / "vitmini.tex"
+    export_tex(nodes, [], out)
+    txt = out.read_text()
+    assert "CLS Head" in txt
+    assert "$C=10$" in txt
+

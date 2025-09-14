@@ -1,0 +1,204 @@
+
+\documentclass[tikz,border=2pt]{standalone}
+\input{transformer_tex/transformer_styles.tex}
+\begin{document}
+\begin{tikzpicture}
+% --- Primitive nodes -------------------------------------------------------
+
+  \node[sblk=2.60cm/0.60cm] (ln0_1) at (0.00cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha0) at (3.20cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add0_1) at (5.60cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln0_2) at (7.30cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn0) at (10.00cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add0_2) at (12.40cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln1_1) at (0.00cm,-14.22cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha1) at (3.20cm,-14.22cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add1_1) at (5.60cm,-14.22cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln1_2) at (7.30cm,-14.22cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn1) at (10.00cm,-14.02cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add1_2) at (12.40cm,-14.02cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln2_1) at (0.00cm,-28.44cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha2) at (3.20cm,-28.44cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add2_1) at (5.60cm,-28.44cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln2_2) at (7.30cm,-28.44cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn2) at (10.00cm,-28.24cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add2_2) at (12.40cm,-28.24cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_1) at (19.20cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha0) at (22.40cm,0.00cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_1) at (24.80cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_2) at (26.50cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (xatt0) at (29.70cm,0.00cm) { CrossAttn\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_2) at (32.10cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln0_3) at (33.80cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn0) at (36.80cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd0_3) at (39.20cm,0.20cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln1_1) at (19.20cm,-22.22cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (dmha1) at (22.40cm,-22.22cm) { MHA*\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd1_1) at (24.80cm,-22.22cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln1_2) at (26.50cm,-22.22cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (xatt1) at (29.70cm,-22.22cm) { CrossAttn\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd1_2) at (32.10cm,-22.22cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (dln1_3) at (33.80cm,-22.22cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (dffn1) at (36.80cm,-22.02cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (dadd1_3) at (39.20cm,-22.02cm) { + };
+
+
+% --- Group / lane boxes (background layer) --------------------------------
+
+\begin{scope}[on background layer]
+
+  \node[gbox,label=above:Encoder ×3,fit=(ln0_1) (mha0) (add0_1) (ln0_2) (ffn0) (add0_2) (ln1_1) (mha1) (add1_1) (ln1_2) (ffn1) (add1_2) (ln2_1) (mha2) (add2_1) (ln2_2) (ffn2) (add2_2)] (enc_stack) {};
+
+  \node[gbox,label=above:Decoder ×2,fit=(dln0_1) (dmha0) (dadd0_1) (dln0_2) (xatt0) (dadd0_2) (dln0_3) (dffn0) (dadd0_3) (dln1_1) (dmha1) (dadd1_1) (dln1_2) (xatt1) (dadd1_2) (dln1_3) (dffn1) (dadd1_3)] (dec_stack) {};
+
+\end{scope}
+
+
+% --- Edges -----------------------------------------------------------------
+
+  
+  \path[conn] (ln0_1.east) -- (mha0.west);
+
+  
+  \path[conn] (mha0.east) -- (add0_1.west);
+
+  
+  \path[conn] (add0_1.east) -- (ln0_2.west);
+
+  
+  \path[conn] (ln0_2.east) -- (ffn0.west);
+
+  
+  \path[conn] (ffn0.east) -- (add0_2.west);
+
+  \path[conn] (ln0_1.west) -- ++(-0.80cm,0.00cm) |- (add0_1.north);
+
+  \path[conn] (ln0_2.west) -- ++(-0.80cm,0.00cm) |- (add0_2.north);
+
+  
+  \path[conn] (ln1_1.east) -- (mha1.west);
+
+  
+  \path[conn] (mha1.east) -- (add1_1.west);
+
+  
+  \path[conn] (add1_1.east) -- (ln1_2.west);
+
+  
+  \path[conn] (ln1_2.east) -- (ffn1.west);
+
+  
+  \path[conn] (ffn1.east) -- (add1_2.west);
+
+  \path[conn] (ln1_1.west) -- ++(-0.80cm,0.00cm) |- (add1_1.north);
+
+  \path[conn] (ln1_2.west) -- ++(-0.80cm,0.00cm) |- (add1_2.north);
+
+  
+  \path[conn] (ln2_1.east) -- (mha2.west);
+
+  
+  \path[conn] (mha2.east) -- (add2_1.west);
+
+  
+  \path[conn] (add2_1.east) -- (ln2_2.west);
+
+  
+  \path[conn] (ln2_2.east) -- (ffn2.west);
+
+  
+  \path[conn] (ffn2.east) -- (add2_2.west);
+
+  \path[conn] (ln2_1.west) -- ++(-0.80cm,0.00cm) |- (add2_1.north);
+
+  \path[conn] (ln2_2.west) -- ++(-0.80cm,0.00cm) |- (add2_2.north);
+
+  
+  \path[conn] (dln0_1.east) -- (dmha0.west);
+
+  
+  \path[conn] (dmha0.east) -- (dadd0_1.west);
+
+  \path[conn] (dln0_1.west) -- ++(-0.80cm,0.00cm) |- (dadd0_1.north);
+
+  
+  \path[conn] (dln0_2.east) -- (xatt0.west);
+
+  
+  \path[conn] (xatt0.east) -- (dadd0_2.west);
+
+  \path[conn] (dln0_2.west) -- ++(-0.80cm,0.00cm) |- (dadd0_2.north);
+
+  
+  \path[conn] (dln0_3.east) -- (dffn0.west);
+
+  
+  \path[conn] (dffn0.east) -- (dadd0_3.west);
+
+  \path[conn] (dln0_3.west) -- ++(-0.80cm,0.00cm) |- (dadd0_3.north);
+
+  
+  \path[conn] (dln1_1.east) -- (dmha1.west);
+
+  
+  \path[conn] (dmha1.east) -- (dadd1_1.west);
+
+  \path[conn] (dln1_1.west) -- ++(-0.80cm,0.00cm) |- (dadd1_1.north);
+
+  
+  \path[conn] (dln1_2.east) -- (xatt1.west);
+
+  
+  \path[conn] (xatt1.east) -- (dadd1_2.west);
+
+  \path[conn] (dln1_2.west) -- ++(-0.80cm,0.00cm) |- (dadd1_2.north);
+
+  
+  \path[conn] (dln1_3.east) -- (dffn1.west);
+
+  
+  \path[conn] (dffn1.east) -- (dadd1_3.west);
+
+  \path[conn] (dln1_3.west) -- ++(-0.80cm,0.00cm) |- (dadd1_3.north);
+
+  \path[conn] (add2_2.east) -- ++(2.00cm,0.00cm) |- (xatt0.west);
+
+  \path[conn] (add2_2.east) -- ++(2.00cm,0.00cm) |- (xatt1.west);
+
+\end{tikzpicture}
+\end{document}
