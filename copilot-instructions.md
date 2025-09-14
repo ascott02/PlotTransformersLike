@@ -379,6 +379,82 @@ clean:
 
 ---
 
+## Legacy Support (Added)
+
+We introduced a minimal compatibility layer inside `pycore/tikzeng.py` so existing PlotNeuralNet users can author Transformer micro‑blocks without immediately adopting the new structured API.
+
+Provided helpers:
+* `to_LayerNorm`, `to_MHA(masked=)`, `to_FFN`, `to_Add`, `to_CLSHead`
+* `to_transformer_block(prefix, x, y)` → LN → MHA → LN → FFN → Add
+
+Rationale:
+1. Incremental adoption; no forced rewrite of legacy CNN figure scripts.
+2. Fast pedagogical sketches.
+3. Bridge path toward richer `plotnn_xt` object model (groups, lanes, stack tags, edges with elbows).
+
+NEXT (legacy layer potential):
+* Edge convenience wrappers (`to_conn(a,b)`, `to_elbow(a,b,dx)`)
+* Cross‑attention composite macro (`to_decoder_block(...)`)
+* Optional width/height scaling parameters for consistent vertical alignment.
+
+---
+
+## Extended TODO Backlog (New Additions)
+
+Styling / Visual Refinement:
+* Iterate node color palette (paper vs slide theme) — create `
+  	ransformerTheme{paper|dark}` macro stub.
+* Distinguish attention variants by subtle hue shifts.
+* Optional shaded residual arcs instead of straight elbows.
+* Consistent vertical alignment of add nodes (baseline formula & helper).
+* Tag node visual polish (border color + subtle gradient / pattern optional).
+
+Layout / Semantics:
+* Bus fan‑out drawing improvement (tee junction glyph instead of simple angle).
+* Automatic vertical spacing resolver for stacked residual patterns.
+* Multi‑head depiction option (split box or overlay head count badge).
+
+Legacy Layer Enhancements:
+* `to_decoder_block(prefix, x, y, cross=True)` macro (masked MHA → (CrossAttn) → FFN).
+* Edge helpers bridging old `arch` method to new style names (reuse `conn` / `dashconn`).
+* Legacy → modern auto‑migration script (regex + heuristic coordinate mapping) — stretch goal.
+
+Testing / CI:
+* Add test ensuring legacy macro output includes key labels (`MHA`, `FFN`, `CLS Head`).
+* Screenshot / PDF hash regression (separate optional GitHub Actions job with TeX cache).
+* Lint pass to flag stray `\\n` inside labels (prevent LaTeX control sequence errors).
+
+Documentation:
+* README migration guide section (legacy vs object API) — partly added, expand with side‑by‑side table.
+* Gallery index page auto‑generated listing all figures with thumbnails (SVG).
+* Troubleshooting guide (common LaTeX errors & fixes: runaway argument, missing style file, bad newline escapes).
+
+Export / Tooling:
+* Add `make dark_theme` target to rebuild all examples with alternate palette.
+* Optional CLI (`plotnn-tx build --theme=dark examples/*`).
+* Direct SVG backend exploration (skip pdf2svg) via `dvisvgm` toggle.
+
+Performance / Maintainability:
+* Cache intermediate .tex emission in temp dir for diff‑based rebuilds (avoid full latexmk run if unchanged).
+* Provide minimal style subset for arXiv (strip colors to grayscale variant).
+
+Nice‑to‑Have Ideas:
+* Interactive coordinate inspector (emit JSON metadata for nodes, then a small HTML overlay to explore anchor points).
+* Parameter annotation overlay (floating legend summarizing d_model, heads, etc.).
+* Automatic legend composer: gather unique primitive kinds + labels.
+
+---
+
+## Immediate Next Milestones (Post‑Legacy Integration)
+1. Add decoder legacy macro (`to_decoder_block`) for parity.
+2. Improve bus junction visualization (custom TikZ path style).
+3. Introduce theme switch macro; rebuild examples (baseline → dark mode).
+4. Add tests for legacy output labels and ViT CLS head presence (regression guard).
+5. Draft GitHub Actions workflow (matrix: python 3.x + minimal TeX) building all examples + running tests.
+
+
+---
+
 ## Style guide (visual + naming)
 
 * Connect **left→right**; prefer top‑lane residuals.

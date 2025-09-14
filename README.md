@@ -152,4 +152,65 @@ These assert that key labels (e.g., `MHA*`, `CrossAttn`) render into emitted `.t
 Status: experimental; styles in `transformer_tex/transformer_styles.tex` will evolve (color themes, tag node styling, etc.).
 
 
+### Legacy Compatibility (Original PlotNeuralNet Style)
+
+If you prefer (or need to keep) the original list‑of‑strings workflow using `pycore/tikzeng.py`, a thin compatibility layer now lets you author simple Transformer blocks without switching to the new object model immediately.
+
+Key additions in `pycore/tikzeng.py`:
+
+* `to_LayerNorm(name, x, y, ...)`
+* `to_MHA(name, x, y, heads=8, d_model=768, masked=False)` (adds `*` in label if masked)
+* `to_FFN(name, x, y, dff=3072)`
+* `to_Add(name, x, y)` residual add node (`+$+$` circle)
+* `to_CLSHead(name, x, y, classes=1000)` classification head
+* `to_transformer_block(prefix, x, y)` convenience macro emitting a minimal encoder‑style micro block: LN → MHA → LN → FFN → Add
+
+Minimal legacy example (`examples/fig_gpt_stack_legacy.py`):
+
+```python
+from pycore import tikzeng as T
+
+arch = [
+    T.to_head('..'),
+    T.to_begin(),
+]
+x0 = 0.0
+y0 = 0.0
+for i in range(3):
+        arch.extend(T.to_transformer_block(f"b{i}_", x0, y0))
+        x0 += 18.0  # horizontal spacing per block
+arch.append(T.to_end())
+T.to_generate(arch, 'examples/fig_gpt_stack_legacy.tex')
+```
+
+Build (identical to original):
+
+```
+latexmk -pdf examples/fig_gpt_stack_legacy.tex
+```
+
+When to use legacy mode:
+
+* You already have older CNN scripts and want to sprinkle in Transformer elements fast.
+* Teaching / quick sketches where full node/edge composition is overkill.
+
+When to migrate to the new object API (`plotnn_xt/`):
+
+* You need grouping boxes, stack tags, or cross‑attn elbows.
+* You want tests around emitted diagrams.
+* You plan iterative styling (themes, dark mode) without rewriting every script.
+
+Migration path:
+1. Replace legacy conv snippets with `to_transformer_block` to confirm layout.
+2. Transition to `plotnn_xt.primitives` + `export_tex` for richer figures.
+3. Drop string concatenation and use structured nodes (`Node`, `Edge`, `Box`).
+
+Limitations (legacy layer):
+* No automatic group boxes or lanes.
+* No edge helper macros yet (connections still manual if desired).
+* Styling updates (themes) applied globally via `transformer_styles.tex`—object model offers finer future control.
+
+If you need legacy edge helpers or a migration cheat‑sheet, open an issue or extend the TODOs (see below).
+
+
 
