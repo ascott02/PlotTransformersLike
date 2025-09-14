@@ -212,5 +212,28 @@ Limitations (legacy layer):
 
 If you need legacy edge helpers or a migration cheat‑sheet, open an issue or extend the TODOs (see below).
 
+### Theme Support (Experimental)
+
+Node and tag colors are now parameterized via simple macros:
+
+| Macro | Purpose | Default (paper) |
+|-------|---------|-----------------|
+| `\tfColorBlock` | Main blocks (MHA/FFN/etc.) | `gray!10` |
+| `\tfColorSmallBlock` | Small blocks (LayerNorm, PosEnc) | `gray!5` |
+| `\tfColorAdd` | Residual add circle fill | `white` |
+| `\tfColorTag` | Stack tag node fill | `yellow!15` |
+| `\tfStroke` | Stroke / border color | `black` |
+
+Dark theme override file: `transformer_tex/theme_dark.tex`
+
+Usage example (dark theme):
+
+```tex
+\input{transformer_tex/theme_dark.tex}
+\input{transformer_tex/transformer_styles.tex}
+```
+
+Then compile your figure `.tex` as usual. You can create additional theme files by redefining the same macros prior to including `transformer_styles.tex`.
+
 
 

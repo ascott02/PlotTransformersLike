@@ -41,6 +41,28 @@ def to_transformer_block(name_prefix, x, y):
 def to_xt_transformer_block(name_prefix, x, y):  # backwards alias
     return to_transformer_block(name_prefix, x, y)
 
+def to_decoder_block(name_prefix, x, y, include_cross=True):  # pragma: no cover
+    """Return snippets for a simplified decoder block.
+
+    Layout: LN -> MHA* -> Add -> LN -> (CrossAttn -> Add)? -> LN -> FFN -> Add
+    The spacing mirrors the object API for visual consistency.
+    """
+    cur = x
+    snips = []
+    snips.append(to_LayerNorm(f"{name_prefix}ln1", cur, y))
+    snips.append(to_MHA(f"{name_prefix}mha", cur + 3.2, y, masked=True))
+    snips.append(to_Add(f"{name_prefix}add1", cur + 5.6, y + 0.2))
+    cur += 7.3
+    if include_cross:
+        snips.append(to_LayerNorm(f"{name_prefix}ln2", cur, y))
+        snips.append(to_MHA(f"{name_prefix}xatt", cur + 3.2, y))
+        snips.append(to_Add(f"{name_prefix}add2", cur + 5.6, y + 0.2))
+        cur += 7.3
+    snips.append(to_LayerNorm(f"{name_prefix}ln3", cur, y))
+    snips.append(to_FFN(f"{name_prefix}ffn", cur + 3.0, y))
+    snips.append(to_Add(f"{name_prefix}add3", cur + 5.4, y + 0.2))
+    return snips
+
 def to_head( projectpath ):
     pathlayers = os.path.join( projectpath, 'layers/' ).replace('\\', '/')
     return r"""

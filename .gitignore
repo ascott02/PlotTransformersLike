@@ -83,3 +83,15 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# --- Added for transformer diagram workflow ---
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+examples/*.pdf
+examples/*.svg
+examples/assets/*.svg
+fig_*.pdf
+fig_*.fdb_latexmk
+fig_*.fls

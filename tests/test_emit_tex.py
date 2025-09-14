@@ -76,3 +76,16 @@ def test_vit_patchflow_min(tmp_path):
     assert "CLS Head" in txt
     assert "$C=10$" in txt
 
+    def test_legacy_transformer_block(tmp_path):
+        """Ensure legacy macro emits expected labels (MHA, FFN, CLS Head optional)."""
+        # build a tiny legacy arch manually
+        from pycore import tikzeng as T  # type: ignore
+        arch = [T.to_head('..'), T.to_begin()]
+        arch += T.to_transformer_block("t0_", 0.0, 0.0)
+        arch.append(T.to_end())
+        out = tmp_path / "legacy_test.tex"
+        T.to_generate(arch, str(out))
+        data = out.read_text()
+        assert "MHA" in data
+        assert "FFN" in data
+
