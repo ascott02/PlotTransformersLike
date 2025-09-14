@@ -132,16 +132,16 @@ Group/lane boxes now render via `export_tex(..., boxes=[...])` using TikZ `fit` 
 * [x] `bus(...)` fan‑out helper (edge list) — needs visual refinement
   return Node(name,x,y,w,h,"blk", f"FFN\\\\\\scriptsize($d_{{ff}}={dff}$)")
 **Phase 3 — Stacks**
-* [x] `repeat(n, block, dir, gap)` utility (label helper TBD)
+* [x] `repeat(n, block, dir, gap)` utility
 * [x] Encoder stack example
-* [ ] GPT stack example
+* [x] GPT stack example (with stack tag helper)
 def mha(name, x, y, w=3.8, h=1.2, heads=8, d_model=768):
 **Phase 4 — ViT**
 * [x] `PatchEmbed`, `ClassToken`, `PosEnc` primitives
-* [ ] End‑to‑end ViT figure
+* [~] ViT figure (stub `fig_vit_patchflow.py`; full stack + CLS head pending)
 
 **Phase 5 — Decoder/Cross‑Attn**
-* [ ] Decoder block with masked MHA + cross‑attn (next in progress)
+* [x] Decoder block with masked MHA + cross‑attn
 * [ ] Encoder–decoder figure
 def patch_embed(name,x,y,w=3.2,h=1.0,patch="16×16",d=768):
 **Phase 6 — Exports**
@@ -153,23 +153,26 @@ def patch_embed(name,x,y,w=3.2,h=1.0,patch="16×16",d=768):
 * [ ] Example gallery README
 * [ ] Render regression test (placeholder only)
 
-## Next Immediate Tasks
+## Next Immediate Tasks (Sprint Focus)
 
-1. Add `cross_attn` primitive & decoder block factory (`decoder_block_factory`).
-2. Create `examples/fig_decoder_block.py` (masked MHA + cross-attn + FFN).
-3. Implement GPT/decoder stack example with `repeat`.
-4. ViT end-to-end figure (patch→[CLS] concat→pos enc→stack×N→CLS head placeholder).
-5. Optional: helper to annotate stacks with `×N` tag node.
+1. Full ViT figure: expand `fig_vit_patchflow.py` → add `repeat` of encoder blocks (×N label) + CLS head placeholder.
+2. Encoder–decoder composite: new `examples/fig_encdec_overview.py` (encoder stack + decoder stack with cross-attn connections + output head box).
+3. SVG export workflow: Makefile target `svg_all` + doc + (optional) guard if `pdf2svg` missing.
+4. Tests expansion: add test for GPT stack & decoder block cross-attn presence, and ViT patchflow anchors.
+5. Styling: introduce `tagnode` TikZ style (distinct from `sblk`) for stack tags and possibly a `head` style for projection heads.
+6. Theme presets scaffold: parameterize style file for `paper` vs `slides` (dark background variant placeholder).
+7. CI plan drafting: outline GitHub Actions steps (minimal TeX Live install + build + tests) inside README section.
 
-## Upcoming Tasks (Queued)
+## Upcoming Tasks (Queued / Backlog)
 
-* GPT stack example (`examples/fig_gpt_stack.py`) using `decoder_block_factory(include_cross=False)` + `repeat` + optional `×N` tag.
-* ViT end-to-end figure (`examples/fig_vit_patchflow.py`): `PatchEmbed` → `[CLS]` + `PosEnc` → encoder stack → classification head placeholder.
-* Stack tag helper: utility to place a small `tag` style node (e.g., `\times N`) adjacent to grouped blocks.
-* SVG export automation test: add test ensuring PDF→SVG conversion path documented (guard if `pdf2svg` missing).
-* CI workflow: GitHub Actions to install TeX Live subset + Python deps; build examples; run tests.
-* Theme presets: add alternate style set (e.g., dark/slides) toggled via an option in exporter.
-* Lane demo (TimeSformer axes): dashed lane boxes with distinct attention blocks for spatial vs temporal.
+* TimeSformer lane demo (`fig_timesformer_axes.py`): dashed `lane` boxes for spatial vs temporal attention paths.
+* Projection heads: add `cls_head` and `lm_head` primitives (extend `primitives.py`).
+* Encoder–decoder figure refinement: show bus fan-out from encoder outputs to each cross-attn block.
+* Render regression harness (`test_render_regression.py` placeholder → implement image diff using Pillow if available).
+* JSON import prototype: tiny schema example mapping module list to primitives (documentation snippet only).
+* Dark theme finalized: color palette + example rebuild in dark mode output folder.
+* Add `tagnode` style and migrate existing stack tags away from `sblk`.
+* Optional: command-line interface stub (`cli.py`) with `build` command for examples.
 
 def pos_enc(name,x,y,w=1.6,h=0.8):   return Node(name,x,y,w,h,"sblk","PosEnc")
 

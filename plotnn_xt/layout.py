@@ -84,3 +84,34 @@ def repeat(n: int, block_fn: Callable[[int, float, float], Tuple[List[Any], List
         else:
             oy -= span + gap  # vertical stacking downward by default
     return all_nodes, all_edges
+
+
+# Stack tag helper ---------------------------------------------------------
+def stack_tag(name: str, nodes: Sequence, text: str) -> Any:
+    """Return a tiny label node (using same shape semantics as primitives) positioned
+    just above the horizontal extent of provided nodes.
+
+    We avoid importing Node directly to keep layout decoupled; assume first node has w/h.
+    The caller can inspect returned object's fields similar to primitives.
+    """
+    if not nodes:
+        raise ValueError("nodes sequence empty for stack_tag")
+    first = nodes[0]
+    last = nodes[-1]
+    # Determine bounding box extremes (naive: assume ordered left->right)
+    x_center = (first.x + last.x + getattr(last, "w", 0)) / 2.0
+    y_top = max(getattr(n, "y", 0) + getattr(n, "h", 0) / 2.0 for n in nodes)
+    # Place tag slightly above
+    class _Tag:
+        def __init__(self, name: str, x: float, y: float, text: str):
+            self.name = name
+            self.x = x
+            self.y = y
+            self.w = 1.0
+            self.h = 0.5
+            self.kind = "sblk"
+            self.label = text
+            @property
+            def anchors(self):  # pragma: no cover - not used currently
+                return {"C": f"({self.name}.center)"}
+    return _Tag(name, x_center - 0.5, y_top + 0.9, text)
