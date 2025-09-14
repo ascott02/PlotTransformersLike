@@ -54,7 +54,7 @@ plotnn-transformers/
 
 * [ ] **Fork** PlotNeuralNet and clone into `upstream/` (or add as submodule).
 * [ ] Create the directories above.
-* [ ] `python -m venv .venv && source .venv/bin/activate`
+* [ ] `python -m venv .venv && source .venv/bin/activate`  ← A dedicated project virtual environment **lives at `.venv/`** (intentionally kept out of version control; see note below).
 * [ ] `pip install -r requirements.txt` (see minimal list below).
 * [ ] Ensure TeX Live (2021+) with `tikz`, `standalone`, `pgf`, `xcolor`, `calc`, `arrows.meta`.
 * [ ] `make examples` → build the starter figures.
@@ -67,6 +67,18 @@ click>=8.1     # if using the CLI
 rich>=13       # nice terminal output (optional)
 Pillow>=10     # only if doing render regression tests
 ```
+
+### Virtual Environment Note (`.venv/`)
+
+This repository assumes a local Python virtual environment located at `.venv/` in the project root:
+
+* Created with: `python -m venv .venv`
+* Activated (bash): `source .venv/bin/activate`
+* Purpose: isolate Python deps (Jinja2, pytest, etc.) from system packages.
+* `.venv/` is listed in `.gitignore` and **should not be committed**.
+* If you recreate the environment, simply re-run: `pip install -r requirements.txt`.
+
+When adding new dependencies, update `requirements.txt` (pin if reproducibility matters) rather than relying on ad‑hoc installs inside `.venv`.
 
 ---
 
