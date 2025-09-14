@@ -6,10 +6,11 @@ PY_EX_SCRIPTS=\
   examples/fig_encoder_block.py \
   examples/fig_decoder_block.py \
   examples/fig_encoder_stack.py \
-  examples/fig_gpt_stack.py \
-	examples/fig_gpt_stack_legacy.py \
   examples/fig_vit_patchflow.py \
   examples/fig_encdec_overview.py
+	examples/fig_vit_patchflow.py \
+	examples/fig_encdec_overview.py \
+	$(wildcard examples/gpt/*.py)
 
 TEX_FROM_PY=$(PY_EX_SCRIPTS:.py=.tex)
 PDFS=$(TEX_FROM_PY:.tex=.pdf)

@@ -76,6 +76,18 @@ def test_vit_patchflow_min(tmp_path):
     assert "CLS Head" in txt
     assert "$C=10$" in txt
 
+
+def test_gpt_stack_3d_emit(tmp_path):
+    # Build 3D GPT stack (small n) and ensure blk3d style is present
+    import subprocess, sys, pathlib
+    root = pathlib.Path(__file__).resolve().parents[1]
+    script = root / "examples" / "gpt" / "fig_gpt_stack_3d.py"
+    subprocess.check_call([sys.executable, str(script)], cwd=str(root))
+    out = root / "examples" / "gpt" / "fig_gpt_stack_3d.tex"
+    data = out.read_text()
+    assert "blk3d" in data
+    assert "Decoder" in data
+
     def test_legacy_transformer_block(tmp_path):
         """Ensure legacy macro emits expected labels (MHA, FFN, CLS Head optional)."""
         # build a tiny legacy arch manually

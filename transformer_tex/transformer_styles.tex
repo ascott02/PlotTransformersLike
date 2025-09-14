@@ -25,6 +25,37 @@
   sblk/.style 2 args={draw=\tfStroke,rounded corners=2pt,thick,fill=\tfColorSmallBlock,minimum width=#1,minimum height=#2,align=center,font=\scriptsize},
   % addnode expects diameter passed twice (w/h) for interface consistency
   addnode/.style 2 args={draw=\tfStroke,circle,thick,inner sep=0pt,minimum size=#1,fill=\tfColorAdd},
+  % 3D variants (simple pseudo-extrusion using shifted top + side faces).
+  % Depth vector controlled by \threeDShift (x) and \threeDUp (y)
+  threeDShift/.store in=\threeDShift, threeDShift=0.35cm,
+  threeDUp/.store in=\threeDUp, threeDUp=0.25cm,
+  blk3d/.style 2 args={draw=\tfStroke,rounded corners=2pt,thick,fill=\tfColorBlock,minimum width=#1,minimum height=#2,align=center,
+    append after command={\pgfextra{%% top face
+      \draw[fill=\tfColorBlock!70,draw=\tfStroke]
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north west) --
+        (\tikzlastnode.north west) --
+        (\tikzlastnode.north east) -- cycle;%% side face
+      \draw[fill=\tfColorBlock!50,draw=\tfStroke]
+        (\tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.south east) --
+        (\tikzlastnode.south east) -- cycle;}}},
+  sblk3d/.style 2 args={draw=\tfStroke,rounded corners=2pt,thick,fill=\tfColorSmallBlock,minimum width=#1,minimum height=#2,align=center,font=\scriptsize,
+    append after command={\pgfextra{%% top face small block
+      \draw[fill=\tfColorSmallBlock!70,draw=\tfStroke]
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north west) --
+        (\tikzlastnode.north west) --
+        (\tikzlastnode.north east) -- cycle;%% side face
+      \draw[fill=\tfColorSmallBlock!50,draw=\tfStroke]
+        (\tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.north east) --
+        ([xshift=\threeDShift,yshift=\threeDUp] \tikzlastnode.south east) --
+        (\tikzlastnode.south east) -- cycle;}}},
+  addnode3d/.style 2 args={addnode={#1}{#2},
+    append after command={\pgfextra{%% subtle highlight arc for 3D suggestion
+      \draw[\tfStroke!60] ([xshift=1pt,yshift=1pt] \tikzlastnode.north west) arc (150:-30:0.35*#1);}}},
   tag/.style={draw,rounded corners=2pt,thin,fill=white,font=\scriptsize,inner sep=1pt},
   tagnode/.style 2 args={draw=\tfStroke,rounded corners=2pt,thin,fill=\tfColorTag,minimum width=#1,minimum height=#2,align=center,font=\scriptsize},
   lane/.style={draw,rounded corners=3pt,thick,dashed,inner sep=6pt},
