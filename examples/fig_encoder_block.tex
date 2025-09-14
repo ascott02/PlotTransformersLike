@@ -1,0 +1,40 @@
+
+\documentclass[tikz,border=2pt]{standalone}
+\input{transformer_tex/transformer_styles.tex}
+\begin{document}
+\begin{tikzpicture}
+
+  \node[sblk=2.60cm/0.60cm] (ln1) at (0.00cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.80cm/1.20cm] (mha) at (3.20cm,0.00cm) { MHA\\\scriptsize(h=8, $d_{model}=768$) };
+
+  \node[addnode=0.22cm/0.22cm] (add1) at (5.60cm,0.00cm) { + };
+
+  \node[sblk=2.60cm/0.60cm] (ln2) at (7.30cm,0.00cm) { LayerNorm };
+
+  \node[blk=3.20cm/1.20cm] (ffn) at (10.00cm,0.20cm) { FFN\\\scriptsize($d_{ff}=3072$) };
+
+  \node[addnode=0.22cm/0.22cm] (add2) at (12.40cm,0.20cm) { + };
+
+
+  
+  \path[conn] (ln1.east) -- (mha.west);
+
+  
+  \path[conn] (mha.east) -- (add1.west);
+
+  
+  \path[conn] (add1.east) -- (ln2.west);
+
+  
+  \path[conn] (ln2.east) -- (ffn.west);
+
+  
+  \path[conn] (ffn.east) -- (add2.west);
+
+  \path[conn] (ln1.west) -- ++(-0.80cm,0.00cm) |- (add1.north);
+
+  \path[conn] (ln2.west) -- ++(-0.80cm,0.00cm) |- (add2.north);
+
+\end{tikzpicture}
+\end{document}

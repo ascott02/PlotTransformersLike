@@ -1,0 +1,17 @@
+% Transformer styles for extended PlotNeuralNet figures
+% Auto-generated initial version
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,arrows.meta,positioning}
+
+% Base styles (parameterized width/height usage: style=blk=<w>cm/<h>cm)
+	ikzset{
+  >={Latex[length=2mm]},
+  blk/.style 2 args={draw,rounded corners=2pt,thick,fill=gray!10,minimum width=#1,minimum height=#2,align=center},
+  sblk/.style 2 args={draw,rounded corners=2pt,thick,fill=gray!5,minimum width=#1,minimum height=#2,align=center,font=\scriptsize},
+  addnode/.style={draw,circle,thick,inner sep=0pt,minimum size=#1,fill=white},
+  tag/.style={draw,rounded corners=2pt,thin,fill=white,font=\scriptsize,inner sep=1pt},
+  lane/.style={draw,rounded corners=3pt,thick,dashed,inner sep=6pt},
+  gbox/.style={draw,rounded corners=4pt,thick,inner sep=6pt,fill=none},
+  conn/.style={-Latex,thick},
+  dashconn/.style={-Latex,thick,dashed},
+}
