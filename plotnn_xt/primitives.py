@@ -47,6 +47,11 @@ def mha(name: str, x: float, y: float, w: float = 3.8, h: float = 1.2, heads: in
     return Node(name, x, y, w, h, "blk", f"MHA{mask}\\\\\\scriptsize(h={heads}, $d_{{model}}={d_model}$)")
 
 
+def cross_attn(name: str, x: float, y: float, w: float = 3.8, h: float = 1.2, heads: int = 8, d_model: int = 768) -> Node:
+    """Cross-attention primitive (encoder-decoder)."""
+    return Node(name, x, y, w, h, "blk", f"CrossAttn\\\\\\scriptsize(h={heads}, $d_{{model}}={d_model}$)")
+
+
 def residual_add(name: str, x: float, y: float, r: float = 0.22) -> Node:
     return Node(name, x, y, r, r, "addnode", "+")
 

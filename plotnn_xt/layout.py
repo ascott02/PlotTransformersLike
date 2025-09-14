@@ -1,7 +1,7 @@
 """Layout helpers for transformer diagrams."""
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional, Tuple, Iterable, List, Sequence
+from typing import Optional, Tuple, Iterable, List, Sequence, Callable, Any
 
 
 @dataclass
@@ -60,3 +60,27 @@ def bus(src_anchor: str, dst_anchors: Sequence[str], style: str = "conn", stub: 
     For now we emit separate elbow edges with same dx stub.
     """
     return [Edge(src_anchor, d, style, (stub, 0.0)) for d in dst_anchors]
+
+
+# Repeat / stacks ----------------------------------------------------------
+def repeat(n: int, block_fn: Callable[[int, float, float], Tuple[List[Any], List[Edge], float]], start=(0.0, 0.0), gap: float = 1.0, dir: str = "x") -> Tuple[List[Any], List[Edge]]:
+    """Repeat a block builder n times along an axis.
+
+    block_fn: (idx, x, y) -> (nodes, edges, span)
+        span: advance amount along the chosen axis (width consumed by block)
+    dir: 'x' or 'y'
+    Returns all nodes and edges concatenated.
+    """
+    assert dir in {"x", "y"}
+    ox, oy = start
+    all_nodes: List[Any] = []
+    all_edges: List[Edge] = []
+    for i in range(n):
+        nodes, edges, span = block_fn(i, ox, oy)
+        all_nodes.extend(nodes)
+        all_edges.extend(edges)
+        if dir == "x":
+            ox += span + gap
+        else:
+            oy -= span + gap  # vertical stacking downward by default
+    return all_nodes, all_edges

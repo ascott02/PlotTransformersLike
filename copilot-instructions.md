@@ -78,7 +78,7 @@ Pillow>=10     # only if doing render regression tests
 5. **One‑command build** for examples, plus CI check.
 ## Bootstrap — 15‑minute path (Progress)
 
-Status: initial extension scaffolding complete; encoder block example and unit test pass.
+Status: extension scaffolding complete; encoder & stack infrastructure implemented; group boxes render; repeat utility & encoder stack example added.
 
 * [ ] **Fork** PlotNeuralNet and clone into `upstream/` (or add as submodule). *(pending explicit upstream checkout)*
 * [x] Create the directories above (`plotnn_xt/`, `transformer_tex/`, `examples/assets/`, `tests/`).
@@ -86,6 +86,7 @@ Status: initial extension scaffolding complete; encoder block example and unit t
 * [x] `pip install -r requirements.txt`
 * [ ] Ensure TeX Live (2021+) with required packages. *(local environment assumed; not yet validated in CI)*
 * [x] `make examples` → builds starter encoder block figure.
+* [x] Added encoder stack example (`examples/fig_encoder_stack.py`).
 
 ## Python API (current state)
 
@@ -115,7 +116,7 @@ Added `gbox` style for grouping boxes. (Styles live in `transformer_tex/transfor
 ## Groups, lanes, buses (current helpers)
 Implemented API (layout.py): `group(name, nodes, title=None)`, `lane(name, nodes, title=None)`, and `bus(src_anchor, [dst_anchors], stub=0.6)` returning edges with a horizontal stub.
 
-Rendering of group/lane boxes into TikZ not yet added to template (next task).
+Group/lane boxes now render via `export_tex(..., boxes=[...])` using TikZ `fit` on background layer.
       "C": f"({self.name}.center)",
 **Phase 0 — Bootstrap**
 * [ ] Repo layout created; upstream fork checked out (local fork structure partially present, upstream submodule not added)
@@ -131,15 +132,16 @@ Rendering of group/lane boxes into TikZ not yet added to template (next task).
 * [x] `bus(...)` fan‑out helper (edge list) — needs visual refinement
   return Node(name,x,y,w,h,"blk", f"FFN\\\\\\scriptsize($d_{{ff}}={dff}$)")
 **Phase 3 — Stacks**
-* [ ] `repeat(n, block, dir, gap)` utility with `×n` label
-* [ ] Encoder stack example; GPT stack example
+* [x] `repeat(n, block, dir, gap)` utility (label helper TBD)
+* [x] Encoder stack example
+* [ ] GPT stack example
 def mha(name, x, y, w=3.8, h=1.2, heads=8, d_model=768):
 **Phase 4 — ViT**
 * [x] `PatchEmbed`, `ClassToken`, `PosEnc` primitives
 * [ ] End‑to‑end ViT figure
 
 **Phase 5 — Decoder/Cross‑Attn**
-* [ ] Decoder block with masked MHA + cross‑attn
+* [ ] Decoder block with masked MHA + cross‑attn (next in progress)
 * [ ] Encoder–decoder figure
 def patch_embed(name,x,y,w=3.2,h=1.0,patch="16×16",d=768):
 **Phase 6 — Exports**
@@ -153,10 +155,21 @@ def patch_embed(name,x,y,w=3.2,h=1.0,patch="16×16",d=768):
 
 ## Next Immediate Tasks
 
-1. Integrate group/lane/box rendering in export template (draw fit rectangles + optional title tag).
-2. Implement `repeat(n, block_fn, dir='x')` and example for encoder stack.
-3. Create decoder block primitive composition (masked MHA + cross-attn placeholder) and example script.
-4. ViT end-to-end figure (patch→cls concat→pos enc→stack×N→cls head placeholder).
+1. Add `cross_attn` primitive & decoder block factory (`decoder_block_factory`).
+2. Create `examples/fig_decoder_block.py` (masked MHA + cross-attn + FFN).
+3. Implement GPT/decoder stack example with `repeat`.
+4. ViT end-to-end figure (patch→[CLS] concat→pos enc→stack×N→CLS head placeholder).
+5. Optional: helper to annotate stacks with `×N` tag node.
+
+## Upcoming Tasks (Queued)
+
+* GPT stack example (`examples/fig_gpt_stack.py`) using `decoder_block_factory(include_cross=False)` + `repeat` + optional `×N` tag.
+* ViT end-to-end figure (`examples/fig_vit_patchflow.py`): `PatchEmbed` → `[CLS]` + `PosEnc` → encoder stack → classification head placeholder.
+* Stack tag helper: utility to place a small `tag` style node (e.g., `\times N`) adjacent to grouped blocks.
+* SVG export automation test: add test ensuring PDF→SVG conversion path documented (guard if `pdf2svg` missing).
+* CI workflow: GitHub Actions to install TeX Live subset + Python deps; build examples; run tests.
+* Theme presets: add alternate style set (e.g., dark/slides) toggled via an option in exporter.
+* Lane demo (TimeSformer axes): dashed lane boxes with distinct attention blocks for spatial vs temporal.
 
 def pos_enc(name,x,y,w=1.6,h=0.8):   return Node(name,x,y,w,h,"sblk","PosEnc")
 

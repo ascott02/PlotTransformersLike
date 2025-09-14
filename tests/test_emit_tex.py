@@ -1,6 +1,7 @@
 from plotnn_xt.primitives import layernorm, mha, ffn, residual_add
 from plotnn_xt.export import export_tex
-from plotnn_xt.layout import connect, elbow
+from plotnn_xt.layout import connect, elbow, group, repeat
+from plotnn_xt.blocks import encoder_block_factory, decoder_block_factory
 
 
 def test_encoder_block_emit(tmp_path):
@@ -24,3 +25,38 @@ def test_encoder_block_emit(tmp_path):
     assert "ln1" in text
     # anchor expression was rendered
     assert "(ln1.west)" in text
+
+
+def test_group_box_emit(tmp_path):
+    # minimal two nodes + group
+    ln1 = layernorm("ln1", 0, 0)
+    ln2 = layernorm("ln2", 3, 0)
+    g = group("g1", [ln1, ln2], title="GroupTitle")
+    out = tmp_path / "grp.tex"
+    export_tex([ln1, ln2], [], out, boxes=[g])
+    text = out.read_text()
+    # fit expression references node names
+    assert "fit=(ln1) (ln2)".replace(" ", " ") in text
+    # title label presence
+    assert "GroupTitle" in text
+
+
+def test_repeat_encoder_blocks(tmp_path):
+    builder = encoder_block_factory()
+    nodes, edges = repeat(2, builder, start=(0.0, 0.0), gap=1.5, dir="x")
+    out = tmp_path / "stack.tex"
+    export_tex(nodes, edges, out)
+    text = out.read_text()
+    # Expect two MHA nodes and two FFN nodes
+    assert text.count("MHA") >= 2
+    assert text.count("FFN") >= 2
+
+
+def test_decoder_block_emit(tmp_path):
+    builder = decoder_block_factory(include_cross=True)
+    nodes, edges, _ = builder(0, 0.0, 0.0)
+    out = tmp_path / "decoder.tex"
+    export_tex(nodes, edges, out)
+    text = out.read_text()
+    assert "MHA*" in text  # masked self-attention
+    assert "CrossAttn" in text
