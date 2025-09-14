@@ -55,11 +55,27 @@ def lane(name: str, nodes: Sequence, title: str | None = None) -> Box:
 
 
 # Bus / fan-out -------------------------------------------------------------
-def bus(src_anchor: str, dst_anchors: Sequence[str], style: str = "conn", stub: float = 0.6) -> List[Edge]:
-    """Create a simple tee fan-out: horizontal stub then vertical to each dst.
-    For now we emit separate elbow edges with same dx stub.
+def bus(src_anchor: str, dst_anchors: Sequence[str], style: str = "conn", stub: float = 0.6, junction: bool = True) -> List[Edge]:
+    """Improved fan-out (bus) helper.
+
+    Emits a horizontal stub from src, optional junction marker, then orthogonal elbows
+    to each destination anchor. Current export template renders only simple (dx,dy)
+    elbows, so we approximate vertical tees by identical via points.
+
+    Args:
+      src_anchor: starting anchor string.
+      dst_anchors: list of destination anchors.
+      style: TikZ edge style key.
+      stub: horizontal offset (cm) before branching.
+      junction: if True, downstream code may overlay a tiny add node / circle at branch.
+    Returns list of Edge objects.
     """
-    return [Edge(src_anchor, d, style, (stub, 0.0)) for d in dst_anchors]
+    edges: List[Edge] = []
+    for d in dst_anchors:
+        edges.append(Edge(src_anchor, d, style, (stub, 0.0)))
+    # NOTE: junction rendering (small node) is not represented as an Edge; could be added
+    # later by returning a synthetic Node-like object. Kept minimal for now.
+    return edges
 
 
 # Repeat / stacks ----------------------------------------------------------
